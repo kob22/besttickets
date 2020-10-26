@@ -16,9 +16,18 @@ Including another URLconf
 from django.urls import include, path
 from rest_framework import routers
 
-from tickets import views as ticket_views
+from tickets.views import EventViewSet, TicketDetailView, TicketListView
 
 router = routers.DefaultRouter()
-router.register(r"topics", ticket_views.EventViewSet, basename="events")
+router.register(r"events", EventViewSet, basename="events")
 
-urlpatterns = [path("", include(router.urls))]
+
+urlpatterns = [
+    path("", include(router.urls)),
+    path(
+        "events/<int:event_id>/tickets/",
+        TicketListView.as_view(),
+        name="tickets-for-event-list",
+    ),
+    path("tickets/<int:ticket_id>/", TicketDetailView.as_view(), name="ticket-detail"),
+]

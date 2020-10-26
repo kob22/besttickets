@@ -103,6 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
 # Internationalization
