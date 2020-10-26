@@ -1,12 +1,13 @@
-from django.test import TestCase
-from django.core.exceptions import ValidationError
-from tickets.models import Event
-from tickets.serializers import EventSerializer
-from besttickets.settings import REST_FRAMEWORK
 import datetime
+from unittest import mock
 
 import pytz
-from unittest import mock
+from django.core.exceptions import ValidationError
+from django.test import TestCase
+from tickets.models import Event
+from tickets.serializers import EventSerializer
+
+from besttickets.settings import REST_FRAMEWORK
 
 
 class EventModelTest(TestCase):
@@ -101,3 +102,5 @@ class EventSerializerTest(TestCase):
 
     def test_contains_correct_data(self):
         self.assertEqual(self.serializer.data, self.event_serialized)
+
+    # todo add serializer validation
