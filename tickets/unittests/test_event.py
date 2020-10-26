@@ -4,10 +4,10 @@ from unittest import mock
 import pytz
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from tickets.models import Event
-from tickets.serializers import EventSerializer
 
 from besttickets.settings import REST_FRAMEWORK
+from tickets.models import Event
+from tickets.serializers import EventSerializer
 
 
 class EventModelTest(TestCase):

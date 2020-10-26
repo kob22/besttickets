@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
+
 from tickets.models import Event
 from tickets.serializers import EventSerializer
 from tickets.views import EventViewSet

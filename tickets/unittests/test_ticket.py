@@ -6,7 +6,9 @@ from django.core.exceptions import ValidationError
 from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
 from django.test import TestCase
+
 from tickets.models import Event, Ticket
+from tickets.serializers import TicketSerializer
 
 
 class TicketModelTest(TestCase):
@@ -54,3 +56,35 @@ class TicketModelTest(TestCase):
         ticket.save()
         with self.assertRaises(ProtectedError):
             event.delete()
+
+
+class TicketSerializerTest(TestCase):
+
+    fixtures = ["tickets/unittests/fixtures/events.json"]
+
+    def setUp(self) -> None:
+
+        self.event = Event.objects.get(id=1)
+
+        self.ticket_attr = {
+            "event": self.event,
+            "category": "Premium",
+            "price": 3000,
+            "qty": 99,
+        }
+        self.ticket_serialized = {
+            "id": 1,
+            "event": 1,
+            "category": "Premium",
+            "price": 3000,
+            "qty": 99,
+        }
+        self.ticket = Ticket.objects.create(**self.ticket_attr)
+        self.ticket_obj_serialized = TicketSerializer(instance=self.ticket)
+
+    def test_ticket_serializer_contains_correct_data(self):
+        self.assertEqual(self.ticket_obj_serialized.data, self.ticket_serialized)
+
+    def test_create_ticket_from_data(self):
+        self.serialized_ticket = TicketSerializer(data=self.ticket_serialized)
+        self.assertTrue(self.serialized_ticket.is_valid())
