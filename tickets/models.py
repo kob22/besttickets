@@ -11,6 +11,6 @@ class Event(models.Model):
 class Ticket(models.Model):
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
     category = models.CharField(max_length=50)
-    price = models.IntegerField(blank=False)
+    price = models.DecimalField(blank=False, max_digits=8, decimal_places=2)
     qty = models.IntegerField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
