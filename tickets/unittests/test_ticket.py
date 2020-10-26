@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
 from django.test import TestCase
+from rest_framework.exceptions import ValidationError as ValidationErrorRF
 
 from tickets.models import Event, Ticket
 from tickets.serializers import TicketSerializer
@@ -104,3 +105,18 @@ class TicketSerializerTest(TestCase):
     def test_create_ticket_from_data(self):
         self.serialized_ticket = TicketSerializer(data=self.ticket_serialized)
         self.assertTrue(self.serialized_ticket.is_valid())
+
+    def test_create_ticket_from_data_with_wrong_event(self):
+        ticket_serialized_wrong_event_id = {
+            "id": 1,
+            "event": 100,
+            "category": "Premium",
+            "price": Decimal("2999.99"),
+            "qty": 99,
+        }
+        serialized_ticket_wrong_event = TicketSerializer(
+            data=ticket_serialized_wrong_event_id
+        )
+
+        with self.assertRaises(ValidationErrorRF):
+            serialized_ticket_wrong_event.is_valid(raise_exception=True)
