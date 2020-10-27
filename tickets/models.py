@@ -12,7 +12,12 @@ class Event(models.Model):
 
 
 class TicketType(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.PROTECT)
+    event = models.ForeignKey(
+        Event,
+        related_name="TicketTypes",
+        related_query_name="TicketTypes",
+        on_delete=models.PROTECT,
+    )
     category = models.CharField(max_length=50)
     price = models.DecimalField(blank=False, max_digits=8, decimal_places=2)
     qty = models.IntegerField(blank=False)
