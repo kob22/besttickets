@@ -16,7 +16,12 @@ Including another URLconf
 from django.urls import include, path
 from rest_framework import routers
 
-from tickets.views import EventViewSet, TicketTypeDetailView, TicketTypeListView
+from tickets.views import (
+    EventViewSet,
+    TicketTypeDetailView,
+    TicketTypeListView,
+    create_tickets,
+)
 
 router = routers.DefaultRouter()
 router.register(r"events", EventViewSet, basename="events")
@@ -34,4 +39,5 @@ urlpatterns = [
         TicketTypeDetailView.as_view(),
         name="ticket-type-detail",
     ),
+    path("ticket/", create_tickets, name="create_ticket"),
 ]
