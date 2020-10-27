@@ -11,7 +11,7 @@ from django.test import TestCase
 from rest_framework.exceptions import ValidationError as ValidationErrorRF
 
 from tickets.models import Event, TicketType
-from tickets.serializers import TicketSerializer
+from tickets.serializers import TicketTypeSerializer
 
 
 class TicketTypeModelTest(TestCase):
@@ -99,7 +99,7 @@ class TicketSerializerTest(TestCase):
             "qty": 99,
         }
         self.ticket_type = TicketType.objects.create(**self.ticket_type_attr)
-        self.ticket_type_obj_serialized = TicketSerializer(instance=self.ticket_type)
+        self.ticket_type_obj_serialized = TicketTypeSerializer(instance=self.ticket_type)
 
     def test_check_ticket_type_price_type(self):
         self.assertTrue(
@@ -112,7 +112,7 @@ class TicketSerializerTest(TestCase):
         )
 
     def test_create_ticket_type_from_data(self):
-        self.serialized_ticket_type = TicketSerializer(data=self.ticket_type_serialized)
+        self.serialized_ticket_type = TicketTypeSerializer(data=self.ticket_type_serialized)
         self.assertTrue(self.serialized_ticket_type.is_valid())
 
     def test_create_ticket_type_from_data_with_wrong_event(self):
@@ -123,7 +123,7 @@ class TicketSerializerTest(TestCase):
             "price": Decimal("2999.99"),
             "qty": 99,
         }
-        serialized_ticket_type_wrong_event = TicketSerializer(
+        serialized_ticket_type_wrong_event = TicketTypeSerializer(
             data=ticket_type_serialized_wrong_event_id
         )
 

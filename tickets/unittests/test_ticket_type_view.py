@@ -7,7 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.test import APIRequestFactory
 
 from tickets.models import TicketType
-from tickets.serializers import TicketSerializer
+from tickets.serializers import TicketTypeSerializer
 from tickets.views import TicketTypeDetailView, TicketTypeListView
 
 
@@ -49,7 +49,7 @@ class TicketTypeViewsALLTest(TestCase):
         response = tickets_type_view(request, event_id=event_id)
         response.render()
 
-        tickets_type_serialized = TicketSerializer(
+        tickets_type_serialized = TicketTypeSerializer(
             TicketType.objects.filter(event=event_id), many=True
         ).data
         tickets_type_json = JSONRenderer().render(tickets_type_serialized)
@@ -88,7 +88,7 @@ class TicketTypeViewsDetailTest(TestCase):
         self.assertEqual(
             response.content,
             JSONRenderer().render(
-                TicketSerializer(TicketType.objects.get(pk=ticket_type_id)).data
+                TicketTypeSerializer(TicketType.objects.get(pk=ticket_type_id)).data
             ),
         )
         self.assertEqual(response["content-type"], "application/json")

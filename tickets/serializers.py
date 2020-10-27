@@ -9,7 +9,7 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "date_event")
 
 
-class TicketSerializer(serializers.ModelSerializer):
+class TicketTypeSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(
         max_digits=8, decimal_places=2, coerce_to_string=False
     )
