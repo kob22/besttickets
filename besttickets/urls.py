@@ -18,9 +18,9 @@ from rest_framework import routers
 
 from tickets.views import (
     EventViewSet,
+    OrderListView,
     TicketTypeDetailView,
     TicketTypeListView,
-    create_tickets,
 )
 
 router = routers.DefaultRouter()
@@ -39,5 +39,5 @@ urlpatterns = [
         TicketTypeDetailView.as_view(),
         name="ticket-type-detail",
     ),
-    path("ticket/", create_tickets, name="create_ticket"),
+    path("orders/", OrderListView.as_view(), name="order-list"),
 ]

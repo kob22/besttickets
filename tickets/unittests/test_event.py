@@ -3,6 +3,7 @@ from unittest import mock
 
 import pytz
 from django.core.exceptions import ValidationError
+from django.db.utils import DataError
 from django.test import TestCase
 
 from besttickets.settings import REST_FRAMEWORK
@@ -56,7 +57,7 @@ class EventModelTest(TestCase):
             name="K" * 301,
             date_event=datetime.datetime(2021, 10, 1, 18, 0, 0, tzinfo=pytz.utc),
         )
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(DataError):
             event.save()
             event.full_clean()
 

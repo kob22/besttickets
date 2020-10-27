@@ -20,7 +20,7 @@ class OrderModelTest(TestCase):
         ):
             order = Order(total=1000)
             order.save()
-        order = Order.objects.get(pk=1)
+        order.refresh_from_db()
         self.assertEqual(order.created_at, date_to_mock)
         # self.assertEqual(order.expired_at, date_to_mock + datetime.timedelta(minutes=15) )
         self.assertEqual(order.total, Decimal("1000.00"))

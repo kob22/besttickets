@@ -6,7 +6,7 @@ from unittest import mock
 import pytz
 from django.core.exceptions import ValidationError
 from django.db.models.deletion import ProtectedError
-from django.db.utils import IntegrityError
+from django.db.utils import DataError, IntegrityError
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError as ValidationErrorRF
 
@@ -59,7 +59,7 @@ class TicketTypeModelTest(TestCase):
 
     def test_max_length_category_field(self):
         event = Event.objects.get(id=1)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(DataError):
             ticket_type = TicketType(
                 event=event, category="V" * 51, price=Decimal("1999.99"), qty=500
             )
@@ -86,20 +86,23 @@ class TicketSerializerTest(TestCase):
         self.event = Event.objects.get(id=1)
 
         self.ticket_type_attr = {
+            "id": 2,
             "event": self.event,
             "category": "Premium",
             "price": Decimal("2999.99"),
             "qty": 99,
         }
         self.ticket_type_serialized = {
-            "id": 1,
+            "id": 2,
             "event": 1,
             "category": "Premium",
             "price": Decimal("2999.99"),
             "qty": 99,
         }
         self.ticket_type = TicketType.objects.create(**self.ticket_type_attr)
-        self.ticket_type_obj_serialized = TicketTypeSerializer(instance=self.ticket_type)
+        self.ticket_type_obj_serialized = TicketTypeSerializer(
+            instance=self.ticket_type
+        )
 
     def test_check_ticket_type_price_type(self):
         self.assertTrue(
@@ -112,7 +115,9 @@ class TicketSerializerTest(TestCase):
         )
 
     def test_create_ticket_type_from_data(self):
-        self.serialized_ticket_type = TicketTypeSerializer(data=self.ticket_type_serialized)
+        self.serialized_ticket_type = TicketTypeSerializer(
+            data=self.ticket_type_serialized
+        )
         self.assertTrue(self.serialized_ticket_type.is_valid())
 
     def test_create_ticket_type_from_data_with_wrong_event(self):
@@ -129,13 +134,3 @@ class TicketSerializerTest(TestCase):
 
         with self.assertRaises(ValidationErrorRF):
             serialized_ticket_type_wrong_event.is_valid(raise_exception=True)
-
-    # def test_update_qty_one_mln(self):
-    #     start = time.time()
-    #     for i in range(10000):
-    #         ticket = TicketType.objects.filter(pk=1).select_for_update(nowait=True).get()
-    #         ticket.qty +=1
-    #         ticket.save()
-    #     end = time.time()
-    #     print(TicketType.objects.get(pk=1).qty)
-    #     print(end - start)
