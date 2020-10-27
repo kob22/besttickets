@@ -15,5 +15,5 @@ class TicketSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = models.Ticket
+        model = models.TicketType
         fields = ("id", "event", "category", "price", "qty")

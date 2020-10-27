@@ -8,7 +8,7 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Ticket(models.Model):
+class TicketType(models.Model):
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
     category = models.CharField(max_length=50)
     price = models.DecimalField(blank=False, max_digits=8, decimal_places=2)

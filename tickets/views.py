@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Event, Ticket
+from .models import Event, TicketType
 from .serializers import EventSerializer, TicketSerializer
 
 
@@ -19,7 +19,7 @@ class EventViewSet(viewsets.ModelViewSet):
 # and overwrites event_id from json if exists
 
 
-class TicketListView(APIView):
+class TicketTypeListView(APIView):
     """
     List all tickets, or create a new ticket for Event.
     """
@@ -30,8 +30,8 @@ class TicketListView(APIView):
         except Event.DoesNotExist:
             raise Http404
 
-        tickets = Ticket.objects.filter(event=event)
-        serializer = TicketSerializer(tickets, many=True)
+        tickets_type = TicketType.objects.filter(event=event)
+        serializer = TicketSerializer(tickets_type, many=True)
         return Response(serializer.data)
 
     def post(self, request, event_id):
@@ -47,31 +47,31 @@ class TicketListView(APIView):
 
 
 # For ticket details I chose url /tickets/:ticket_id, because event_id is not needed to manage the ticket
-class TicketDetailView(APIView):
+class TicketTypeDetailView(APIView):
     """
     Retrieve, update or delete a ticket instance for Event.
     """
 
-    def get_object(self, ticket_id):
+    def get_object(self, ticket_type_id):
         try:
-            return Ticket.objects.get(pk=ticket_id)
-        except Ticket.DoesNotExist:
+            return TicketType.objects.get(pk=ticket_type_id)
+        except TicketType.DoesNotExist:
             raise Http404
 
-    def get(self, request, ticket_id):
-        ticket = self.get_object(ticket_id)
-        serializer = TicketSerializer(ticket)
+    def get(self, request, ticket_type_id):
+        ticket_type = self.get_object(ticket_type_id)
+        serializer = TicketSerializer(ticket_type)
         return Response(serializer.data)
 
-    def put(self, request, ticket_id):
-        ticket = self.get_object(ticket_id)
-        serializer = TicketSerializer(ticket, data=request.data)
+    def put(self, request, ticket_type_id):
+        ticket_type = self.get_object(ticket_type_id)
+        serializer = TicketSerializer(ticket_type, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, ticket_id):
-        ticket = self.get_object(ticket_id)
+        ticket_type = self.get_object(ticket_id)
         ticket.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

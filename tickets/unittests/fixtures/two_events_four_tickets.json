@@ -1,6 +1,6 @@
 [
 {
-    "model": "tickets.ticket",
+    "model": "tickets.tickettype",
     "pk": 1,
     "fields": {
         "event": 2,
@@ -11,7 +11,7 @@
     }
 },
 {
-    "model": "tickets.ticket",
+    "model": "tickets.tickettype",
     "pk": 2,
     "fields": {
         "event": 2,
@@ -22,7 +22,7 @@
     }
 },
 {
-    "model": "tickets.ticket",
+    "model": "tickets.tickettype",
     "pk": 3,
     "fields": {
         "event": 2,
@@ -33,7 +33,7 @@
     }
 },
     {
-    "model": "tickets.ticket",
+    "model": "tickets.tickettype",
     "pk": 4,
     "fields": {
         "event": 3,
