@@ -71,7 +71,7 @@ class TicketTypeDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, ticket_id):
-        ticket_type = self.get_object(ticket_id)
-        ticket.delete()
+    def delete(self, request, ticket_type_id):
+        ticket_type = self.get_object(ticket_type_id)
+        ticket_type.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
