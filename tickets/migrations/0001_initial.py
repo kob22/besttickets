@@ -8,17 +8,30 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=300, validators=[django.core.validators.MinLengthValidator(5)])),
-                ('date_event', models.DateTimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=300,
+                        validators=[django.core.validators.MinLengthValidator(5)],
+                    ),
+                ),
+                ("date_event", models.DateTimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
     ]

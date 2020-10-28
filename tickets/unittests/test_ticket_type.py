@@ -76,6 +76,28 @@ class TicketTypeModelTest(TestCase):
         with self.assertRaises(ProtectedError):
             event.delete()
 
+    def test_check_available_tickets_with_not_sold(self):
+
+        event = Event.objects.get(id=1)
+        ticket_type = TicketType(event=event, category="VIP", price=1990, qty=500)
+        ticket_type.save()
+        ticket_type.full_clean()
+        ticket_type.refresh_from_db()
+
+        self.assertEqual(ticket_type.tickets_available, 500)
+
+    def test_test_check_available_tickets_when_sold(self):
+
+        event = Event.objects.get(id=1)
+        ticket_type = TicketType(event=event, category="VIP", price=1990, qty=500)
+        ticket_type.save()
+        ticket_type.full_clean()
+        ticket_type.refresh_from_db()
+        mock_query_set = mock.MagicMock()
+        with mock.patch("tickets.models.TicketType.Tickets", mock_query_set):
+            mock_query_set.count.return_value = 100
+            self.assertEqual(ticket_type.tickets_available, 400)
+
 
 class TicketSerializerTest(TestCase):
 
@@ -93,6 +115,14 @@ class TicketSerializerTest(TestCase):
             "qty": 99,
         }
         self.ticket_type_serialized = {
+            "id": 2,
+            "event": 1,
+            "category": "Premium",
+            "price": Decimal("2999.99"),
+            "qty": 99,
+            "tickets_available": 99,
+        }
+        self.ticket_type_serialized_with_out_tickets_avb = {
             "id": 2,
             "event": 1,
             "category": "Premium",
@@ -116,7 +146,7 @@ class TicketSerializerTest(TestCase):
 
     def test_create_ticket_type_from_data(self):
         self.serialized_ticket_type = TicketTypeSerializer(
-            data=self.ticket_type_serialized
+            data=self.ticket_type_serialized_with_out_tickets_avb
         )
         self.assertTrue(self.serialized_ticket_type.is_valid())
 

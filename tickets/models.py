@@ -23,6 +23,10 @@ class TicketType(models.Model):
     qty = models.IntegerField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def tickets_available(self):
+        return self.qty - self.Tickets.count()
+
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

@@ -31,7 +31,6 @@ class TicketViewTest(TestCase):
     #         a.save()
     #         a.full_clean()
 
-
     # def test_serializer(self):
     #
     #     order = Order(total=200)
@@ -44,7 +43,6 @@ class TicketViewTest(TestCase):
     #                     serializer.is_valid()
     #                     serializer.save()
     #
-
 
     # def test_cart(self):
     #
