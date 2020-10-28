@@ -25,7 +25,7 @@ SECRET_KEY = "^%wg8$@!x)v1n8u4@8*&9=1p&ronko)dzuta-*ij^kvmxwwb=x"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '172.28.1.4', '172.28.0.0']
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "172.28.1.4", "172.28.0.0"]
 
 
 # Application definition
@@ -77,12 +77,8 @@ WSGI_APPLICATION = "besttickets.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        'HOST': 'db',
-        "PORT": 5432,
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 

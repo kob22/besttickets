@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,6 +18,23 @@ from .serializers import (
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    def list(self, request):
+        if request.GET.get("tickets", None) is not None:
+            nested_tickets = True
+        else:
+            nested_tickets = False
+        serializer = EventSerializer(self.queryset, many=True, nested=nested_tickets)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        if request.GET.get("tickets", None) is not None:
+            nested_tickets = True
+        else:
+            nested_tickets = False
+        event = get_object_or_404(self.queryset, pk=pk)
+        serializer = EventSerializer(event, nested=nested_tickets)
+        return Response(serializer.data)
 
 
 # I was thinking about url structure for ticket lists, /events/:event_id/tickets vs /tickets, I chose the first one

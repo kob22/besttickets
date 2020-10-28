@@ -17,17 +17,27 @@ DRF + postgresql + docker
 
 The REST API besttickets is described below.
 
-## Get list of events
+## Events
 
-### Request
+### Get list of events
 
 `GET /events/`
 
     curl -i -H 'Accept: application/json' http://0.0.0.0:8000/events/
+    
+### Get list of events with tickets
 
-## Get a list of tickets
+`GET /events/?tickets`
 
-### Request
+    curl -i -H 'Accept: application/json' http://0.0.0.0:8000/events/?tickets
+
+### Get single event with/without tickets
+
+`GET /events/:event_id/?tickets`
+
+    curl -i -H 'Accept: application/json' http://0.0.0.0:8000/events/:event_id/?tickets
+
+### Get a list of tickets
 
 `GET /events/:event_id/tickets/`
 

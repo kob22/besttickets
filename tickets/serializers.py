@@ -3,12 +3,6 @@ from rest_framework import serializers
 from . import models
 
 
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Event
-        fields = ("id", "name", "date_event")
-
-
 class TicketTypeSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(
         max_digits=8, decimal_places=2, coerce_to_string=False
@@ -17,6 +11,23 @@ class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TicketType
         fields = ("id", "event", "category", "price", "qty", "tickets_available")
+
+
+class DynamicNestedSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        nested = kwargs.pop("nested", None)
+        if not nested:
+            self.fields.pop("TicketTypes")
+
+        super().__init__(*args, **kwargs)
+
+
+class EventSerializer(DynamicNestedSerializer):
+    TicketTypes = TicketTypeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Event
+        fields = ("id", "name", "date_event", "TicketTypes")
 
 
 class TicketSerializer(serializers.ModelSerializer):

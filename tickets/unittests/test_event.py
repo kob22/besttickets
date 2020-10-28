@@ -104,4 +104,26 @@ class EventSerializerTest(TestCase):
     def test_contains_correct_data(self):
         self.assertEqual(self.serializer.data, self.event_serialized)
 
+    def test_nested_serializer_without_tickets(self):
+        data = self.serializer.data
+        self.assertNotIn("tickets", data.keys())
+
+    def test_nested_serializer_with_tickets(self):
+        data = self.serializer.data
+        self.assertNotIn("tickets", data.keys())
+
     # todo add serializer validation
+
+
+class EventSerializerNestedTest(TestCase):
+    fixtures = [
+        "tickets/unittests/fixtures/events.json",
+        "tickets/unittests/fixtures/two_events_four_tickets.json",
+    ]
+
+    def test_nested_serializer_with_tickets(self):
+        event = Event.objects.get(pk=2)
+
+        event_serializer = EventSerializer(event, nested=True)
+
+        self.assertIn("TicketTypes", event_serializer.data.keys())
