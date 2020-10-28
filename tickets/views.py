@@ -20,19 +20,21 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
 
     def list(self, request):
+        queryset = Event.objects.all()
         if request.GET.get("tickets", None) is not None:
             nested_tickets = True
         else:
             nested_tickets = False
-        serializer = EventSerializer(self.queryset, many=True, nested=nested_tickets)
+        serializer = EventSerializer(queryset, many=True, nested=nested_tickets)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        queryset = Event.objects.all()
         if request.GET.get("tickets", None) is not None:
             nested_tickets = True
         else:
             nested_tickets = False
-        event = get_object_or_404(self.queryset, pk=pk)
+        event = get_object_or_404(queryset, pk=pk)
         serializer = EventSerializer(event, nested=nested_tickets)
         return Response(serializer.data)
 
