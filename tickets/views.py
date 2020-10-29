@@ -107,22 +107,24 @@ class OrderListView(APIView):
     """
 
     def post(self, request):
-        # make order and reserve tickets in transaction
-        with transaction.atomic():
-            order = Order()
-            order.save()
-            # make cart from json
-            cart = CartSerializer(data=request.data, many=True)
-            if cart.is_valid(raise_exception=True):
-                # if cart is correct, create tickets and count total sum for order
+        cart = CartSerializer(data=request.data, many=True)
+        # if cart is correct, create order, tickets and count total sum for order
+        if cart.is_valid(raise_exception=True) and len(cart.validated_data):
+            # make order and reserve tickets in transaction
+            with transaction.atomic():
+                order = Order()
+                order.save()
                 for item in cart.validated_data:
                     for _ in range(item["quantity"]):
                         order.total += item["ticket_type"].price
                         ticket = Ticket(type=item["ticket_type"], order=order)
                         ticket.save()
-            order.save()
-        order_serializer = OrderSerializer(instance=order)
-        return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+                order.save()
+                order_serializer = OrderSerializer(instance=order)
+                return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # def create_tickets(request, how_many):

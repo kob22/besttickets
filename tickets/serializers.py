@@ -46,7 +46,7 @@ class CartSerializer(serializers.Serializer):
     ticket_type = serializers.PrimaryKeyRelatedField(
         queryset=models.TicketType.objects.all()
     )
-    quantity = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
 
     def validate(self, data):
         if (data["ticket_type"].Tickets.count() + data["quantity"]) <= data[

@@ -8,9 +8,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
 
-from tickets.models import Ticket, TicketType
+from tickets.models import Ticket, TicketType, Order
 from tickets.views import OrderListView
-
+from django.http import QueryDict
 
 class OrderViewListTest(TestCase):
 
@@ -76,7 +76,48 @@ class OrderViewListTest(TestCase):
                 item["quantity"],
             )
 
+    def test_order_with_invalid_cart(self):
+        cart = [{"tickettype": 6, "qty": 3},
+            {"ticket_type": 88, "quantity": 2},
+        ]
 
+        factory = APIRequestFactory()
+        order_view = OrderListView.as_view()
+        request = factory.post(
+            reverse("order-list"),
+            json.dumps(cart),
+            content_type="application/json",
+        )
+        response = order_view(request)
+        response.render()
+
+        self.assertEqual(Order.objects.all().count(), 0)
+        self.assertEqual(Ticket.objects.all().count(), 0)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response["content-type"], "application/json")
+
+    def test_order_with_zero_quantity(self):
+        cart = [
+            {"ticket_type": 1, "quantity": 2},
+            {"ticket_type": 2, "quantity": 0},
+        ]
+
+        factory = APIRequestFactory()
+        order_view = OrderListView.as_view()
+        request = factory.post(
+            reverse("order-list"),
+            json.dumps(cart),
+            content_type="application/json",
+        )
+        response = order_view(request)
+        response.render()
+
+        self.assertEqual(Order.objects.all().count(), 0)
+        self.assertEqual(Ticket.objects.all().count(), 0)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response["content-type"], "application/json")
 # class OrderRaceTest(TestCase):
 #
 #     fixtures = [
