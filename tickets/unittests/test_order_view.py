@@ -1,4 +1,6 @@
 import json
+import random
+from concurrent import futures
 from decimal import Decimal
 
 from django.test import TestCase
@@ -75,15 +77,21 @@ class OrderViewListTest(TestCase):
             )
 
 
+# class OrderRaceTest(TestCase):
+#
+#     fixtures = [
+#             "tickets/unittests/fixtures/events.json",
+#             "tickets/unittests/fixtures/two_events_four_tickets.json",
+#         ]
 #     def test_check_race_condition_if_not_creates_too_much_tickets(self):
 #
 #         carts = []
 #         total_tickets = 0
-#         for i in range(2):
+#         for i in range(20):
 #             ticket_by_round = random.randint(1,10)
 #             total_tickets+=ticket_by_round
 #             carts.append([{"ticket_type": 1, "quantity": ticket_by_round}, {"ticket_type": 2, "quantity": random.randint(1,2)}])
-#         executor =futures.ProcessPoolExecutor(max_workers=20)
+#         executor =futures.ProcessPoolExecutor(max_workers=2)
 #         results= [executor.submit(make_order_requests, cart) for cart in carts]
 #         executor.shutdown(wait=True)
 #

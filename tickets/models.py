@@ -58,12 +58,12 @@ class Ticket(models.Model):
         on_delete=models.PROTECT,
     )
 
-    # def save(self, *args, **kwargs):
-    #     if self.pk:
-    #         super().save(*args, **kwargs)
-    #     else:
-    #
-    #         if Ticket.objects.filter(type=self.type).count() < self.type.qty:
-    #             super().save(*args, **kwargs)  # Call the "real" save() method.
-    #         else:
-    #             raise Exception('too much tickets')
+    def save(self, *args, **kwargs):
+        if self.pk:
+            super().save(*args, **kwargs)
+        else:
+
+            if Ticket.objects.filter(type=self.type).count() < self.type.qty:
+                super().save(*args, **kwargs)  # Call the "real" save() method.
+            else:
+                raise Exception("too much tickets")
