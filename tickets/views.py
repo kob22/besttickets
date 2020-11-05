@@ -126,7 +126,6 @@ class OrderListView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-
 # def create_tickets(request, how_many):
 #     ticket_type = TicketType.objects.get(pk=1)
 #     data = [{"type": 1}, {"type": 1}, {"type": 1}]

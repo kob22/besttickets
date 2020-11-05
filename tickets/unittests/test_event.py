@@ -126,4 +126,4 @@ class EventSerializerNestedTest(TestCase):
 
         event_serializer = EventSerializer(event, nested=True)
 
-        self.assertIn("TicketTypes", event_serializer.data.keys())
+        self.assertIn("ticket_types", event_serializer.data.keys())

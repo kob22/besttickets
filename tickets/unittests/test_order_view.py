@@ -3,14 +3,15 @@ import random
 from concurrent import futures
 from decimal import Decimal
 
+from django.http import QueryDict
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
 
-from tickets.models import Ticket, TicketType, Order
+from tickets.models import Order, Ticket, TicketType
 from tickets.views import OrderListView
-from django.http import QueryDict
+
 
 class OrderViewListTest(TestCase):
 
@@ -77,7 +78,8 @@ class OrderViewListTest(TestCase):
             )
 
     def test_order_with_invalid_cart(self):
-        cart = [{"tickettype": 6, "qty": 3},
+        cart = [
+            {"tickettype": 6, "qty": 3},
             {"ticket_type": 88, "quantity": 2},
         ]
 
@@ -118,6 +120,8 @@ class OrderViewListTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response["content-type"], "application/json")
+
+
 # class OrderRaceTest(TestCase):
 #
 #     fixtures = [

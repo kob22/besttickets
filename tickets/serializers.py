@@ -17,17 +17,17 @@ class DynamicNestedSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         nested = kwargs.pop("nested", None)
         if not nested:
-            self.fields.pop("TicketTypes")
+            self.fields.pop("ticket_types")
 
         super().__init__(*args, **kwargs)
 
 
 class EventSerializer(DynamicNestedSerializer):
-    TicketTypes = TicketTypeSerializer(many=True, read_only=True)
+    ticket_types = TicketTypeSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Event
-        fields = ("id", "name", "date_event", "TicketTypes")
+        fields = ("id", "name", "date_event", "ticket_types")
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -49,7 +49,7 @@ class CartSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(min_value=1)
 
     def validate(self, data):
-        if (data["ticket_type"].Tickets.count() + data["quantity"]) <= data[
+        if (data["ticket_type"].tickets.count() + data["quantity"]) <= data[
             "ticket_type"
         ].qty:
             return data

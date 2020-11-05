@@ -94,7 +94,7 @@ class TicketTypeModelTest(TestCase):
         ticket_type.full_clean()
         ticket_type.refresh_from_db()
         mock_query_set = mock.MagicMock()
-        with mock.patch("tickets.models.TicketType.Tickets", mock_query_set):
+        with mock.patch("tickets.models.TicketType.tickets", mock_query_set):
             mock_query_set.count.return_value = 100
             self.assertEqual(ticket_type.tickets_available, 400)
 

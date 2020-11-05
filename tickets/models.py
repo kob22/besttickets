@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.core.validators import MinLengthValidator
-from django.db import IntegrityError, models, transaction
+from django.db import models
 from django.utils.timezone import now
 
 
@@ -14,8 +14,8 @@ class Event(models.Model):
 class TicketType(models.Model):
     event = models.ForeignKey(
         Event,
-        related_name="TicketTypes",
-        related_query_name="TicketTypes",
+        related_name="ticket_types",
+        related_query_name="ticket_types",
         on_delete=models.PROTECT,
     )
     category = models.CharField(max_length=50)
@@ -25,7 +25,7 @@ class TicketType(models.Model):
 
     @property
     def tickets_available(self):
-        return self.qty - self.Tickets.count()
+        return self.qty - self.tickets.count()
 
 
 class Order(models.Model):
@@ -46,15 +46,15 @@ class Order(models.Model):
 class Ticket(models.Model):
     type = models.ForeignKey(
         TicketType,
-        related_name="Tickets",
-        related_query_name="Ticket",
+        related_name="tickets",
+        related_query_name="ticket",
         on_delete=models.PROTECT,
     )
     status = models.CharField(max_length=1, blank=False, default="R")
     order = models.ForeignKey(
         Order,
-        related_name="Tickets",
-        related_query_name="Ticket",
+        related_name="tickets",
+        related_query_name="ticket",
         on_delete=models.PROTECT,
     )
 
@@ -62,8 +62,7 @@ class Ticket(models.Model):
         if self.pk:
             super().save(*args, **kwargs)
         else:
-
             if Ticket.objects.filter(type=self.type).count() < self.type.qty:
-                super().save(*args, **kwargs)  # Call the "real" save() method.
+                super().save(*args, **kwargs)
             else:
-                raise Exception("too much tickets")
+                raise Exception("No enough tickets")
