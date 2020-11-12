@@ -12,7 +12,9 @@ DRF + postgresql + docker
 ## Run the tests
 
     ./manage.py test
-
+    
+## Swagger documentation
+    http://0.0.0.0:8000/swagger/
 # REST API
 
 The REST API besttickets is described below.
