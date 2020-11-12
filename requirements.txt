@@ -4,3 +4,4 @@ psycopg2
 locust
 flake8
 drf-yasg[validation]
+coverage

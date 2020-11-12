@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/kob22/besttickets/branch/develop/graph/badge.svg)](https://codecov.io/gh/kob22/besttickets)
 # REST API ticket selling platform
 
 DRF + postgresql + docker
