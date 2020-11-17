@@ -70,35 +70,9 @@ class TicketTypeListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# For ticket details I chose url /tickets/:ticket_id, because event_id is not needed to manage the ticket
-class TicketTypeDetailView(APIView):
-    """
-    Retrieve, update or delete a ticket instance for Event.
-    """
-
-    def get_object(self, ticket_type_id):
-        try:
-            return TicketType.objects.get(pk=ticket_type_id)
-        except TicketType.DoesNotExist:
-            raise Http404
-
-    def get(self, request, ticket_type_id):
-        ticket_type = self.get_object(ticket_type_id)
-        serializer = TicketTypeSerializer(ticket_type)
-        return Response(serializer.data)
-
-    def put(self, request, ticket_type_id):
-        ticket_type = self.get_object(ticket_type_id)
-        serializer = TicketTypeSerializer(ticket_type, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, ticket_type_id):
-        ticket_type = self.get_object(ticket_type_id)
-        ticket_type.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class TicketTypeViewSet(viewsets.ModelViewSet):
+    queryset = TicketType.objects.all()
+    serializer_class = TicketTypeSerializer
 
 
 class OrderListView(APIView):

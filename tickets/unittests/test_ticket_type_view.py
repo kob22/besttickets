@@ -8,7 +8,7 @@ from rest_framework.test import APIRequestFactory
 
 from tickets.models import TicketType
 from tickets.serializers import TicketTypeSerializer
-from tickets.views import TicketTypeDetailView, TicketTypeListView
+from tickets.views import TicketTypeListView, TicketTypeViewSet
 
 
 ### There is only information about get tickets details in documentation, so tests are only for get views.
@@ -67,9 +67,9 @@ class TicketTypeViewsDetailTest(TestCase):
 
     def test_get_non_existing_tickets_type(self):
         factory = APIRequestFactory()
-        ticket_type_view = TicketTypeDetailView.as_view()
-        request = factory.get(reverse("ticket-type-detail", args=(222,)))
-        response = ticket_type_view(request, ticket_type_id=222)
+        ticket_type_view = TicketTypeViewSet.as_view({"get": "retrieve"})
+        request = factory.get(reverse("ticket-types-detail", args=(222,)))
+        response = ticket_type_view(request, pk=222)
         response.render()
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -79,9 +79,9 @@ class TicketTypeViewsDetailTest(TestCase):
     def test_get_existing_ticket_type(self):
         ticket_type_id = 3
         factory = APIRequestFactory()
-        ticket_type_view = TicketTypeDetailView.as_view()
-        request = factory.get(reverse("ticket-type-detail", args=(ticket_type_id,)))
-        response = ticket_type_view(request, ticket_type_id=ticket_type_id)
+        ticket_type_view = TicketTypeViewSet.as_view({"get": "retrieve"})
+        request = factory.get(reverse("ticket-types-detail", args=(ticket_type_id,)))
+        response = ticket_type_view(request, pk=ticket_type_id)
         response.render()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -89,6 +89,42 @@ class TicketTypeViewsDetailTest(TestCase):
             response.content,
             JSONRenderer().render(
                 TicketTypeSerializer(TicketType.objects.get(pk=ticket_type_id)).data
+            ),
+        )
+        self.assertEqual(response["content-type"], "application/json")
+
+
+class TicketTypeViewsEmptyDB(TestCase):
+    def test_get_all_ticket_type_empty_list(self):
+        factory = APIRequestFactory()
+        events_view = TicketTypeViewSet.as_view({"get": "list"})
+        request = factory.get(reverse("ticket-types-list"))
+        response = events_view(request)
+        response.render()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), [])
+        self.assertEqual(response["content-type"], "application/json")
+
+
+class TicketTypeViewsWithTickets(TestCase):
+    fixtures = [
+        "tickets/unittests/fixtures/events.json",
+        "tickets/unittests/fixtures/two_events_four_tickets.json",
+    ]
+
+    def test_get_all_tickets(self):
+        factory = APIRequestFactory()
+        events_view = TicketTypeViewSet.as_view({"get": "list"})
+        request = factory.get(reverse("ticket-types-list"))
+        response = events_view(request)
+        response.render()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.content,
+            JSONRenderer().render(
+                TicketTypeSerializer(TicketType.objects.all(), many=True).data
             ),
         )
         self.assertEqual(response["content-type"], "application/json")
