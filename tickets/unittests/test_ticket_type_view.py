@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 from rest_framework.test import APIRequestFactory
 
-from tickets.models import TicketType
+from tickets.models import Event, TicketType
 from tickets.serializers import TicketTypeSerializer
 from tickets.views import TicketTypeListView, TicketTypeViewSet
 
@@ -127,4 +127,60 @@ class TicketTypeViewsWithTickets(TestCase):
                 TicketTypeSerializer(TicketType.objects.all(), many=True).data
             ),
         )
+        self.assertEqual(response["content-type"], "application/json")
+
+
+class TicketTypeViewsFilters(TestCase):
+    fixtures = [
+        "tickets/unittests/fixtures/events.json",
+        "tickets/unittests/fixtures/two_events_four_tickets.json",
+    ]
+
+    def test_get_tickets_from_event_without_tickets(self):
+        kwargs = {"event": 1}
+        factory = APIRequestFactory()
+        events_view = TicketTypeViewSet.as_view({"get": "list"})
+        request = factory.get(reverse("ticket-types-list"), kwargs)
+        response = events_view(request, kwargs)
+        response.render()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), []),
+        self.assertEqual(response["content-type"], "application/json")
+
+    def test_get_tickets_from_event_with_tickets(self):
+        kwargs = {"event": 2}
+        factory = APIRequestFactory()
+        events_view = TicketTypeViewSet.as_view({"get": "list"})
+        request = factory.get(reverse("ticket-types-list"), kwargs)
+        response = events_view(request, kwargs)
+        response.render()
+
+        event = Event.objects.get(pk=kwargs["event"])
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.content,
+            JSONRenderer().render(
+                TicketTypeSerializer(event.ticket_types, many=True).data
+            ),
+        ),
+        self.assertEqual(response["content-type"], "application/json")
+
+    def test_get_tickets_from_non_existing_event(self):
+        kwargs = {"event": 222}
+        factory = APIRequestFactory()
+        events_view = TicketTypeViewSet.as_view({"get": "list"})
+        request = factory.get(reverse("ticket-types-list"), kwargs)
+        response = events_view(request, kwargs)
+        response.render()
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            json.loads(response.content),
+            {
+                "event": [
+                    "Select a valid choice. That choice is not one of the available choices."
+                ]
+            },
+        ),
         self.assertEqual(response["content-type"], "application/json")

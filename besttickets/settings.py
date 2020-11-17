@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "tickets.apps.TicketsConfig",
     "rest_framework",
     "drf_yasg",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -109,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
 }
 
 # Internationalization

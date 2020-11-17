@@ -5,3 +5,4 @@ locust
 flake8
 drf-yasg[validation]
 coverage
+django-filter

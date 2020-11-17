@@ -73,6 +73,7 @@ class TicketTypeListView(APIView):
 class TicketTypeViewSet(viewsets.ModelViewSet):
     queryset = TicketType.objects.all()
     serializer_class = TicketTypeSerializer
+    filterset_fields = ("event",)
 
 
 class OrderListView(APIView):
