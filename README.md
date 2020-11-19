@@ -1,6 +1,10 @@
 [![codecov](https://codecov.io/gh/kob22/besttickets/branch/develop/graph/badge.svg)](https://codecov.io/gh/kob22/besttickets)
 # REST API ticket selling platform
 
+## Task description
+[Task description task.pdf](task.pdf)
+
+
 DRF + postgresql + docker
 ## Install
 
